@@ -1,8 +1,8 @@
-from deepface import DeepFace
+from deepface import DeepFace #Imports DeepFace AI Model for facial recognition and analysis
 from django.conf import settings 
 from accounts.models import User, StudentProfile
 from django.shortcuts import get_object_or_404
-import cv2 
+import cv2  #Imports cv2 for image processing
 import json
 from scipy.spatial import distance as dist
 from imutils.video import VideoStream
@@ -23,7 +23,7 @@ from mentor.models import Course, Chapter
 from django.db.models import F
 from .serializers import CourseProgressSerializer, ChapterProgressSerializer
 
-class VideoStreamManager:
+class VideoStreamManager: #used for managing the video stream
     _instance = None
 
     def __new__(cls):
@@ -46,7 +46,7 @@ COUNTER = 0
 TOTAL = 0
 LOOKDOWN_COUNTER = 0
 
-def eye_aspect_ratio(eye):
+def eye_aspect_ratio(eye): #calculates the eye aspect ratio using coordinates of facial landmarks
     A = dist.euclidean(eye[1], eye[5])
     B = dist.euclidean(eye[2], eye[4])
     C = dist.euclidean(eye[0], eye[3])
@@ -55,6 +55,8 @@ def eye_aspect_ratio(eye):
 
 @csrf_exempt
 @require_POST
+#Starts tracking for a specific user
+#initializes video stream, calculates eye AR, checks for engagement
 def start_tracking(request, courseId, userId):
     print(DeepFace.__version__)
     global EYE_AR_THRESH, COUNTER, TOTAL, LOOKDOWN_COUNTER
@@ -231,6 +233,7 @@ def start_tracking(request, courseId, userId):
 
 @csrf_exempt
 @require_POST
+#stops tracking
 def stop_tracking(request, courseId, userId):
     global EYE_AR_THRESH, COUNTER, TOTAL, LOOKDOWN_COUNTER
     vs_manager = video_stream_manager.get_vs()
